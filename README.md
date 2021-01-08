@@ -6,10 +6,9 @@ name: "test"
 parameters:
   - name: parameter1
     type: string
-    default: windows
+    default: develop
 variables:
   var1: valueVAR1
-  var2: ${{ parameters.parameter1 }}
 stages:
     - stage: justAStep
       displayName: I am the fist step
@@ -23,11 +22,15 @@ stages:
                var2: 'ubuntu'
 
           pool:
-            vmImage: ${{ variables.var2 }}-latest
+            vmImage: $(var2)-latest
           steps:
-          - script: echo the 1st variaeble is $(var1)
-          - script: echo the 1st parameter is $(parameter1)
-          - bash: echo $(var1)
+          
+          - script: echo the 1st variable is $(var1)
+          - bash: echo the 2nd variable is $(var2)
+          - script: echo the 1st parameter is ${{parameters.parameter1}}
+          - script: echo print only if the value of var2 is windows
+            condition: eq(variables.var2, 'windows')
+
           - task: PowerShell@2
             inputs:
               targetType: 'inline'
